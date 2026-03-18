@@ -102,4 +102,13 @@
     z-index: 9999;
     transition: width 0.05s linear;
   }
+
+  /* Language switch: fade-in only (no white flash) */
+  @keyframes lang-fade-in {
+    from { opacity: 0.45; }
+    to   { opacity: 1; }
+  }
+  .lang-switch {
+    animation: lang-fade-in 0.28s ease forwards;
+  }
 }

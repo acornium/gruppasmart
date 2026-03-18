@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from "react";
 
 export type Lang = "ru" | "en";
 
@@ -266,25 +266,25 @@ const LangContext = createContext<LangContextType | null>(null);
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("ru");
-  const [fading, setFading] = useState(false);
   const t = translations[lang] as unknown as Translations;
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const toggle = useCallback(() => {
-    setFading(true);
-    setTimeout(() => {
-      setLang((l) => (l === "ru" ? "en" : "ru"));
-      setFading(false);
-    }, 180);
+    // Switch language immediately — no fade-out, just fade-in from partial opacity
+    setLang((l) => (l === "ru" ? "en" : "ru"));
+
+    // Trigger the CSS animation by briefly removing and re-adding the class
+    const el = wrapperRef.current;
+    if (el) {
+      el.classList.remove("lang-switch");
+      void el.offsetWidth; // force reflow so browser sees the class removal
+      el.classList.add("lang-switch");
+    }
   }, []);
 
   return (
     <LangContext.Provider value={{ lang, t, toggle }}>
-      <div
-        style={{
-          opacity: fading ? 0 : 1,
-          transition: "opacity 0.18s ease",
-        }}
-      >
+      <div ref={wrapperRef}>
         {children}
       </div>
     </LangContext.Provider>
