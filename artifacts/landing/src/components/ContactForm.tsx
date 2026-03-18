@@ -1,40 +1,44 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { Mail, Phone, Loader2 } from "lucide-react";
+import { Mail, Phone, Loader2, ArrowRight } from "lucide-react";
 import { useSubmitContactForm } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
-import clsx from "clsx";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Введите ваше имя"),
   email: z.string().email("Введите корректный email"),
   phone: z.string().optional(),
   investorType: z.enum(["private", "hnwi", "fund", "other"], { required_error: "Выберите тип" }),
-  investmentVolume: z.string().min(1, "Выберите объем"),
+  investmentVolume: z.string().min(1, "Выберите объём"),
   message: z.string().optional(),
   requestType: z.enum(["invest", "presentation", "contact"], { required_error: "Выберите тип заявки" }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
+const requestTypes = [
+  { value: "invest", label: "Инвестировать" },
+  { value: "presentation", label: "Получить презентацию" },
+  { value: "contact", label: "Задать вопрос" },
+];
+
 export function ContactForm() {
   const { toast } = useToast();
+  const [submitted, setSubmitted] = useState(false);
+
   const { mutate, isPending } = useSubmitContactForm({
     mutation: {
       onSuccess: () => {
-        toast({
-          title: "Заявка успешно отправлена",
-          description: "Наш менеджер свяжется с вами в ближайшее время.",
-        });
+        setSubmitted(true);
         form.reset();
       },
       onError: () => {
         toast({
           variant: "destructive",
-          title: "Произошла ошибка",
+          title: "Ошибка отправки",
           description: "Не удалось отправить заявку. Попробуйте позже или свяжитесь по телефону.",
         });
       },
@@ -54,204 +58,244 @@ export function ContactForm() {
     },
   });
 
+  const currentRequestType = form.watch("requestType");
+
   const onSubmit = (data: FormValues) => {
     mutate({ data });
   };
 
-  const currentRequestType = form.watch("requestType");
-
   return (
-    <section id="contact" className="py-24 md:py-32 bg-cream-100">
+    <section id="contact" className="py-24 md:py-32 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         <div className="grid lg:grid-cols-5 gap-16 lg:gap-24">
-          
-          {/* Info Column */}
+
+          {/* Left info column */}
           <div className="lg:col-span-2 flex flex-col justify-center">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-4"
+              className="flex items-center gap-3 mb-5"
             >
-              Контакты
+              <div className="w-6 h-px bg-accent-500" />
+              <span className="text-accent-500 text-xs font-semibold tracking-[0.22em] uppercase">
+                Контакты
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.05 }}
+              className="text-4xl md:text-5xl font-display text-navy-900 mb-6"
+            >
+              Связаться с командой
             </motion.h2>
-            <motion.h3 
-              initial={{ opacity: 0, y: 20 }}
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-5xl font-display text-navy-900 mb-8"
-            >
-              Связаться с командой
-            </motion.h3>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-navy-800/70 text-lg font-sans mb-12 leading-relaxed"
+              className="text-slate-500 text-base font-sans leading-relaxed mb-12"
             >
               Мы открыты к диалогу и готовы предоставить детальную презентацию портфеля, ответить на вопросы и обсудить форматы сотрудничества.
             </motion.p>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="flex items-center gap-4 group">
-                <div className="w-12 h-12 flex items-center justify-center border border-navy-900/10 group-hover:border-gold-500 transition-colors bg-white">
-                  <Phone className="w-5 h-5 text-gold-600" />
+              {[
+                { icon: Phone, label: "Телефон", value: "+7 (495) 123-45-67", href: "tel:+74951234567" },
+                { icon: Mail, label: "Email", value: "info@smart-devt.ru", href: "mailto:info@smart-devt.ru" },
+              ].map(({ icon: Icon, label, value, href }) => (
+                <div key={label} className="flex items-center gap-4 group">
+                  <div className="w-11 h-11 bg-white border border-slate-200 flex items-center justify-center group-hover:border-accent-500 group-hover:bg-accent-500 transition-all">
+                    <Icon className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold mb-0.5">{label}</div>
+                    <a href={href} className="text-navy-900 font-medium text-sm hover:text-accent-500 transition-colors">
+                      {value}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm text-navy-800/60 uppercase tracking-widest font-semibold mb-1">Телефон</div>
-                  <a href="tel:+74951234567" className="text-xl font-display font-medium text-navy-900 hover:text-gold-600 transition-colors">
-                    +7 (495) 123-45-67
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 group">
-                <div className="w-12 h-12 flex items-center justify-center border border-navy-900/10 group-hover:border-gold-500 transition-colors bg-white">
-                  <Mail className="w-5 h-5 text-gold-600" />
-                </div>
-                <div>
-                  <div className="text-sm text-navy-800/60 uppercase tracking-widest font-semibold mb-1">Email</div>
-                  <a href="mailto:info@smart-devt.ru" className="text-xl font-display font-medium text-navy-900 hover:text-gold-600 transition-colors">
-                    info@smart-devt.ru
-                  </a>
-                </div>
-              </div>
+              ))}
             </motion.div>
           </div>
 
-          {/* Form Column */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
+          {/* Form column */}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="lg:col-span-3 bg-white p-8 md:p-12 shadow-xl shadow-navy-900/5 border border-border"
+            transition={{ delay: 0.15 }}
+            className="lg:col-span-3"
           >
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              
-              {/* Radio Group styled beautifully */}
-              <div className="space-y-3">
-                <label className="text-xs font-semibold uppercase tracking-widest text-navy-900/60">Тема обращения *</label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {submitted ? (
+              <div className="bg-white border border-slate-100 shadow-sm p-12 flex flex-col items-center text-center h-full justify-center min-h-80">
+                <div className="w-14 h-14 bg-accent-500 flex items-center justify-center mb-6">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-white">
+                    <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-display text-navy-900 mb-3">Заявка отправлена</h3>
+                <p className="text-slate-500 text-sm leading-relaxed max-w-sm">
+                  Наш менеджер свяжется с вами в течение 1 рабочего дня. Благодарим за интерес к SMART Development.
+                </p>
+                <button
+                  onClick={() => setSubmitted(false)}
+                  className="mt-8 text-xs text-slate-400 hover:text-navy-900 transition-colors underline underline-offset-4"
+                >
+                  Отправить ещё одну заявку
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="bg-white border border-slate-100 shadow-sm p-8 md:p-10 space-y-7"
+              >
+                {/* Request type selector */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                    Тема обращения *
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {requestTypes.map((opt) => (
+                      <label
+                        key={opt.value}
+                        className={`flex items-center justify-center p-3 text-center cursor-pointer border text-xs font-medium tracking-wide transition-all duration-200 select-none ${
+                          currentRequestType === opt.value
+                            ? "border-accent-500 bg-accent-50 text-accent-600"
+                            : "border-slate-200 text-slate-400 hover:border-slate-400 hover:text-slate-600"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          value={opt.value}
+                          className="hidden"
+                          {...form.register("requestType")}
+                        />
+                        {opt.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Name + Email */}
+                <div className="grid md:grid-cols-2 gap-6">
                   {[
-                    { value: "invest", label: "Инвестировать" },
-                    { value: "presentation", label: "Презентация" },
-                    { value: "contact", label: "Задать вопрос" }
-                  ].map((opt) => (
-                    <label 
-                      key={opt.value}
-                      className={clsx(
-                        "block p-4 text-center cursor-pointer border transition-all duration-200 select-none",
-                        currentRequestType === opt.value 
-                          ? "border-gold-500 bg-gold-500/5 text-navy-900 font-medium" 
-                          : "border-border/60 text-navy-800/70 hover:border-navy-900/30"
-                      )}
-                    >
-                      <input 
-                        type="radio" 
-                        value={opt.value} 
-                        className="hidden" 
-                        {...form.register("requestType")} 
+                    { id: "name", label: "Имя *", placeholder: "Иван Петров", type: "text" },
+                    { id: "email", label: "Email *", placeholder: "ivan@company.ru", type: "email" },
+                  ].map(({ id, label, placeholder, type }) => (
+                    <div key={id} className="space-y-1.5">
+                      <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                        {label}
+                      </label>
+                      <input
+                        type={type}
+                        placeholder={placeholder}
+                        {...form.register(id as keyof FormValues)}
+                        className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 placeholder:text-slate-300 focus:outline-none focus:border-accent-500 transition-colors"
                       />
-                      <span className="text-sm">{opt.label}</span>
-                    </label>
+                      {form.formState.errors[id as keyof FormValues] && (
+                        <p className="text-red-500 text-xs">{form.formState.errors[id as keyof FormValues]?.message}</p>
+                      )}
+                    </div>
                   ))}
                 </div>
-                {form.formState.errors.requestType && (
-                  <p className="text-red-500 text-xs mt-1">{form.formState.errors.requestType.message}</p>
-                )}
-              </div>
 
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-navy-900/60">Имя *</label>
-                  <input 
-                    {...form.register("name")}
-                    className="w-full bg-transparent border-b border-navy-900/20 py-3 text-navy-900 placeholder:text-navy-900/30 focus:outline-none focus:border-gold-500 transition-colors"
-                    placeholder="Иван Иванов"
-                  />
-                  {form.formState.errors.name && <p className="text-red-500 text-xs">{form.formState.errors.name.message}</p>}
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-navy-900/60">Email *</label>
-                  <input 
-                    {...form.register("email")}
-                    className="w-full bg-transparent border-b border-navy-900/20 py-3 text-navy-900 placeholder:text-navy-900/30 focus:outline-none focus:border-gold-500 transition-colors"
-                    placeholder="ivan@example.com"
-                  />
-                  {form.formState.errors.email && <p className="text-red-500 text-xs">{form.formState.errors.email.message}</p>}
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-navy-900/60">Телефон</label>
-                  <input 
-                    {...form.register("phone")}
-                    className="w-full bg-transparent border-b border-navy-900/20 py-3 text-navy-900 placeholder:text-navy-900/30 focus:outline-none focus:border-gold-500 transition-colors"
-                    placeholder="+7 (___) ___-__-__"
-                  />
+                {/* Phone + Investor type */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                      Телефон
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="+7 (___) ___-__-__"
+                      {...form.register("phone")}
+                      className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 placeholder:text-slate-300 focus:outline-none focus:border-accent-500 transition-colors"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                      Тип инвестора *
+                    </label>
+                    <select
+                      {...form.register("investorType")}
+                      defaultValue=""
+                      className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 focus:outline-none focus:border-accent-500 transition-colors appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled hidden>Выберите тип</option>
+                      <option value="private">Частный инвестор</option>
+                      <option value="hnwi">HNWI (от 50 млн ₽)</option>
+                      <option value="fund">Институциональный фонд</option>
+                      <option value="other">Другое</option>
+                    </select>
+                    {form.formState.errors.investorType && (
+                      <p className="text-red-500 text-xs">{form.formState.errors.investorType.message}</p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="space-y-2 relative">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-navy-900/60">Тип инвестора *</label>
-                  <select 
-                    {...form.register("investorType")}
+                {/* Investment volume */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                    Объём инвестиций *
+                  </label>
+                  <select
+                    {...form.register("investmentVolume")}
                     defaultValue=""
-                    className="w-full bg-transparent border-b border-navy-900/20 py-3 text-navy-900 focus:outline-none focus:border-gold-500 transition-colors appearance-none cursor-pointer"
+                    className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 focus:outline-none focus:border-accent-500 transition-colors appearance-none cursor-pointer"
                   >
-                    <option value="" disabled hidden>Выберите тип</option>
-                    <option value="private">Частный инвестор</option>
-                    <option value="hnwi">HNWI (от 50 млн ₽)</option>
-                    <option value="fund">Институциональный фонд</option>
-                    <option value="other">Другое</option>
+                    <option value="" disabled hidden>Укажите планируемый объём</option>
+                    <option value="5-50">5–50 млн руб.</option>
+                    <option value="50-500">50–500 млн руб.</option>
+                    <option value="500+">Более 500 млн руб.</option>
                   </select>
-                  {form.formState.errors.investorType && <p className="text-red-500 text-xs">{form.formState.errors.investorType.message}</p>}
+                  {form.formState.errors.investmentVolume && (
+                    <p className="text-red-500 text-xs">{form.formState.errors.investmentVolume.message}</p>
+                  )}
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-widest text-navy-900/60">Объём инвестиций *</label>
-                <select 
-                  {...form.register("investmentVolume")}
-                  defaultValue=""
-                  className="w-full bg-transparent border-b border-navy-900/20 py-3 text-navy-900 focus:outline-none focus:border-gold-500 transition-colors appearance-none cursor-pointer"
+                {/* Message */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                    Сообщение
+                  </label>
+                  <textarea
+                    {...form.register("message")}
+                    rows={3}
+                    placeholder="Дополнительная информация или вопросы..."
+                    className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 placeholder:text-slate-300 focus:outline-none focus:border-accent-500 transition-colors resize-none"
+                  />
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="group w-full flex items-center justify-between py-4 px-6 bg-navy-900 text-white text-sm font-semibold tracking-wide hover:bg-accent-500 transition-colors disabled:opacity-60"
                 >
-                  <option value="" disabled hidden>Укажите планируемый объём</option>
-                  <option value="5-50">5–50 млн руб.</option>
-                  <option value="50-500">50–500 млн руб.</option>
-                  <option value="500+">Более 500 млн руб.</option>
-                </select>
-                {form.formState.errors.investmentVolume && <p className="text-red-500 text-xs">{form.formState.errors.investmentVolume.message}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-widest text-navy-900/60">Сообщение (необязательно)</label>
-                <textarea 
-                  {...form.register("message")}
-                  rows={3}
-                  className="w-full bg-transparent border-b border-navy-900/20 py-3 text-navy-900 placeholder:text-navy-900/30 focus:outline-none focus:border-gold-500 transition-colors resize-none"
-                  placeholder="Дополнительная информация или вопросы..."
-                />
-              </div>
-
-              <button 
-                type="submit" 
-                disabled={isPending}
-                className="w-full py-4 bg-navy-900 text-white font-bold tracking-widest uppercase text-sm hover:bg-navy-800 hover:text-gold-500 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
-              >
-                {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-                {isPending ? "Отправка..." : "Отправить заявку"}
-              </button>
-            </form>
+                  <span className="flex items-center gap-2">
+                    {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {isPending ? "Отправка..." : "Отправить заявку"}
+                  </span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </form>
+            )}
           </motion.div>
         </div>
+
       </div>
     </section>
   );

@@ -1,84 +1,137 @@
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
+function CountUp({ target, suffix = "", duration = 2000 }: { target: number; suffix?: string; duration?: number }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const startTime = performance.now();
+          const step = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * target));
+            if (progress < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+}
+
+const stats = [
+  { label: "Лет на рынке", value: 15, suffix: "+" },
+  { label: "м² под управлением", value: 500, suffix: "k+" },
+  { label: "Объектов в портфеле", value: 20, suffix: "+" },
+  { label: "Целевая доходность", value: 12, suffix: "–18%" },
+];
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-      {/* Background Image & Overlays */}
+    <section className="relative min-h-screen flex flex-col justify-between pt-24 overflow-hidden bg-navy-950">
+      {/* Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-navy-950/75 mix-blend-multiply z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-900/40 to-transparent z-10" />
+        <div className="absolute inset-0 bg-navy-950/70 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/30 to-transparent z-10" />
+        {/* Subtle grid overlay */}
+        <div
+          className="absolute inset-0 z-10 opacity-[0.04]"
+          style={{
+            backgroundImage: "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
         <img
           src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
-          alt="Premium Real Estate Architecture"
-          className="w-full h-full object-cover scale-105 motion-safe:animate-[pulse_20s_ease-in-out_infinite_alternate]"
+          alt="Commercial real estate"
+          className="w-full h-full object-cover"
         />
       </div>
 
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <span className="inline-block py-1 px-3 border border-gold-500/30 text-gold-400 text-xs font-semibold tracking-[0.2em] uppercase mb-6 backdrop-blur-sm">
-              Инвестиционный фонд недвижимости
-            </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-white leading-[1.1] mb-6 text-balance">
-              Диверсифицированные инвестиции в <span className="text-gold-500 italic">реальные активы</span>
-            </h1>
-            <p className="text-lg md:text-xl text-cream-200/80 max-w-2xl leading-relaxed mb-10 font-sans font-light">
-              С фокусом на сохранение и долгосрочный рост капитала. Компания формирует и управляет портфелем складской, торговой и жилой недвижимости — активов с устойчивым спросом и предсказуемой доходностью.
-            </p>
+      {/* Content */}
+      <div className="relative z-20 flex-1 flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
+          <div className="max-w-4xl">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-8 h-px bg-accent-400" />
+                <span className="text-accent-400 text-xs font-semibold tracking-[0.25em] uppercase">
+                  Девелопмент и управление активами
+                </span>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="#contact"
-                className="group flex items-center justify-center gap-2 px-8 py-4 bg-gold-500 text-navy-900 font-semibold tracking-wide hover:bg-gold-400 transition-all duration-300"
-              >
-                Инвестировать в портфель
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a
-                href="#contact"
-                className="flex items-center justify-center px-8 py-4 bg-transparent border border-cream-100/20 text-cream-100 font-medium tracking-wide hover:bg-cream-100/10 hover:border-gold-500/50 transition-all duration-300 backdrop-blur-sm"
-              >
-                Получить презентацию
-              </a>
-            </div>
-          </motion.div>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-white leading-[1.08] mb-6 text-balance">
+                Диверсифицированные инвестиции в{" "}
+                <span className="text-white/50 italic font-light">реальные активы</span>
+              </h1>
+
+              <p className="text-base md:text-lg text-white/55 max-w-2xl leading-relaxed mb-10 font-sans font-light">
+                С фокусом на сохранение и долгосрочный рост капитала. Компания формирует и управляет портфелем складской, торговой и жилой недвижимости — активов с устойчивым спросом и предсказуемой доходностью.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <motion.a
+                  href="#contact"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  className="group inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-white text-navy-900 text-sm font-semibold tracking-wide hover:bg-slate-100 transition-colors"
+                >
+                  Инвестировать в портфель
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </motion.a>
+                <motion.a
+                  href="#contact"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  className="inline-flex items-center justify-center px-8 py-4 bg-transparent border border-white/15 text-white/80 text-sm font-medium tracking-wide hover:border-white/35 hover:text-white transition-colors"
+                >
+                  Получить презентацию
+                </motion.a>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* Key Stats Strip */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
-        className="absolute bottom-0 left-0 right-0 border-t border-cream-100/10 bg-navy-950/50 backdrop-blur-md z-20"
+      {/* Stats strip */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+        className="relative z-20 border-t border-white/8 bg-white/[0.03] backdrop-blur-sm"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-cream-100/10">
-            {[
-              { label: "Опыта на рынке", value: "15+ лет" },
-              { label: "Под управлением", value: "500k+ м²" },
-              { label: "Объектов в портфеле", value: "20+" },
-              { label: "Целевая доходность", value: "12–18%" },
-            ].map((stat, i) => (
-              <div key={i} className="py-6 px-4 md:px-8 flex flex-col justify-center">
-                <span className="text-gold-500 font-display text-3xl md:text-4xl mb-1">{stat.value}</span>
-                <span className="text-cream-100/60 text-xs md:text-sm font-medium uppercase tracking-wider">{stat.label}</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/8">
+            {stats.map((stat, i) => (
+              <div key={i} className="py-7 px-6 md:px-10">
+                <div className="text-white font-display text-3xl md:text-4xl font-semibold mb-1 tabular-nums">
+                  <CountUp target={stat.value} suffix={stat.suffix} duration={1600} />
+                </div>
+                <div className="text-white/40 text-xs font-sans font-medium uppercase tracking-widest">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </motion.div>
-      
-      {/* Scroll indicator */}
-      <a href="#about" className="absolute bottom-32 left-1/2 -translate-x-1/2 z-20 text-cream-100/50 hover:text-gold-500 transition-colors animate-bounce hidden md:block">
-        <ChevronDown className="w-8 h-8" />
-      </a>
     </section>
   );
 }
