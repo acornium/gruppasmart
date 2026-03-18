@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 
 export type Lang = "ru" | "en";
 
@@ -266,9 +266,29 @@ const LangContext = createContext<LangContextType | null>(null);
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("ru");
+  const [fading, setFading] = useState(false);
   const t = translations[lang] as unknown as Translations;
-  const toggle = () => setLang((l) => (l === "ru" ? "en" : "ru"));
-  return <LangContext.Provider value={{ lang, t, toggle }}>{children}</LangContext.Provider>;
+
+  const toggle = useCallback(() => {
+    setFading(true);
+    setTimeout(() => {
+      setLang((l) => (l === "ru" ? "en" : "ru"));
+      setFading(false);
+    }, 180);
+  }, []);
+
+  return (
+    <LangContext.Provider value={{ lang, t, toggle }}>
+      <div
+        style={{
+          opacity: fading ? 0 : 1,
+          transition: "opacity 0.18s ease",
+        }}
+      >
+        {children}
+      </div>
+    </LangContext.Provider>
+  );
 }
 
 export function useLang() {
