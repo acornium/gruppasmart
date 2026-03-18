@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: 'Cormorant Garamond', serif;
+  --font-sans: 'DM Sans', sans-serif;
+
+  --color-gold-400: hsl(46, 65%, 60%);
+  --color-gold-500: hsl(46, 65%, 52%);
+  --color-gold-600: hsl(46, 65%, 45%);
+
+  --color-navy-800: hsl(222, 47%, 15%);
+  --color-navy-900: hsl(222, 47%, 11%);
+  --color-navy-950: hsl(222, 47%, 8%);
+
+  --color-cream-100: hsl(40, 20%, 97%);
+  --color-cream-200: hsl(40, 20%, 93%);
+
+  --color-background: var(--color-cream-100);
+  --color-foreground: var(--color-navy-900);
+  
+  --color-primary: var(--color-navy-900);
+  --color-primary-foreground: var(--color-gold-500);
+  
+  --color-accent: var(--color-gold-500);
+  --color-accent-foreground: var(--color-navy-900);
+  
+  --color-muted: hsl(222, 10%, 90%);
+  --color-muted-foreground: hsl(222, 10%, 40%);
+  
+  --color-border: hsl(40, 10%, 85%);
+  --color-card: hsl(0, 0%, 100%);
+  --color-card-foreground: var(--color-navy-900);
+
+  --color-ring: var(--color-gold-500);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans antialiased bg-background text-foreground selection:bg-gold-500/30 selection:text-navy-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+
+  /* Custom input autofill styles to match dark theme gracefully */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active{
+      -webkit-box-shadow: 0 0 0 30px white inset !important;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .glass-nav {
+    @apply bg-cream-100/90 backdrop-blur-md border-b border-navy-900/5;
+  }
+}

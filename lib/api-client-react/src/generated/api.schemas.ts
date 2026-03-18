@@ -8,3 +8,56 @@
 export interface HealthStatus {
   status: string;
 }
+
+/**
+ * Type of investor
+ */
+export type ContactFormInputInvestorType =
+  (typeof ContactFormInputInvestorType)[keyof typeof ContactFormInputInvestorType];
+
+export const ContactFormInputInvestorType = {
+  private: "private",
+  hnwi: "hnwi",
+  fund: "fund",
+  other: "other",
+} as const;
+
+/**
+ * Type of request
+ */
+export type ContactFormInputRequestType =
+  (typeof ContactFormInputRequestType)[keyof typeof ContactFormInputRequestType];
+
+export const ContactFormInputRequestType = {
+  invest: "invest",
+  presentation: "presentation",
+  contact: "contact",
+} as const;
+
+export interface ContactFormInput {
+  /** Full name */
+  name: string;
+  /** Email address */
+  email: string;
+  /** Phone number (optional) */
+  phone?: string;
+  /** Type of investor */
+  investorType?: ContactFormInputInvestorType;
+  /** Approximate investment volume */
+  investmentVolume?: string;
+  /** Additional message or request */
+  message?: string;
+  /** Type of request */
+  requestType: ContactFormInputRequestType;
+}
+
+export interface ContactFormResponse {
+  success: boolean;
+  message: string;
+  id?: number;
+}
+
+export interface ErrorResponse {
+  error: string;
+  details?: string;
+}

@@ -14,3 +14,31 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Submit a contact/investor inquiry form
+ * @summary Submit investor inquiry
+ */
+export const SubmitContactFormBody = zod.object({
+  name: zod.string().describe("Full name"),
+  email: zod.string().email().describe("Email address"),
+  phone: zod.string().optional().describe("Phone number (optional)"),
+  investorType: zod
+    .enum(["private", "hnwi", "fund", "other"])
+    .optional()
+    .describe("Type of investor"),
+  investmentVolume: zod
+    .string()
+    .optional()
+    .describe("Approximate investment volume"),
+  message: zod.string().optional().describe("Additional message or request"),
+  requestType: zod
+    .enum(["invest", "presentation", "contact"])
+    .describe("Type of request"),
+});
+
+export const SubmitContactFormResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string(),
+  id: zod.number().optional(),
+});

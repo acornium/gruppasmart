@@ -1,0 +1,33 @@
+packages:
+  "framer-motion": "For premium smooth scroll animations and page transitions"
+  "react-hook-form": "For robust contact form state management"
+  "@hookform/resolvers": "For Zod validation integration with react-hook-form"
+  "clsx": "For conditional class name joining"
+  "tailwind-merge": "For merging tailwind classes safely"
+
+images:
+  - path: "artifacts/landing/public/images/hero-bg.png"
+    description: "Dark, moody architectural photography of a premium modern glass and steel office building at dusk, warm interior lighting glowing, luxury corporate aesthetic, institutional real estate"
+    aspect_ratio: "16:9"
+  - path: "artifacts/landing/public/images/portfolio-1.png"
+    description: "Modern sleek warehouse facility, clean logistics park, architectural photography, sunny day, premium real estate, straight architectural lines"
+    aspect_ratio: "4:3"
+  - path: "artifacts/landing/public/images/portfolio-2.png"
+    description: "High-tech industrial park building, modern facade, glass and steel exterior, clean paved loading areas, sunny"
+    aspect_ratio: "4:3"
+  - path: "artifacts/landing/public/images/portfolio-3.png"
+    description: "Premium modern shopping mall exterior, luxury retail center architecture, evening lighting, warm glow, upscale"
+    aspect_ratio: "4:3"
+  - path: "artifacts/landing/public/images/portfolio-4.png"
+    description: "Luxury residential complex, modern architecture, clear sky, highly detailed, beautifully landscaped surroundings"
+    aspect_ratio: "4:3"
+  - path: "artifacts/landing/public/images/portfolio-5.png"
+    description: "Large scale modern logistics distribution center, aerial view, clean design, rows of loading docks, bright sunny day"
+    aspect_ratio: "4:3"
+  - path: "artifacts/landing/public/images/portfolio-6.png"
+    description: "Premium suburban retail park, modern design, sleek glass shopfronts, landscaping, daytime"
+    aspect_ratio: "4:3"
+
+notes:
+  - Form submission utilizes useSubmitContactForm from @workspace/api-client-react
+  - Existing use-toast hook from the shadcn scaffold is used for notifications
