@@ -1,52 +1,13 @@
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
-
-const tiers = [
-  {
-    title: "Частные инвесторы",
-    volume: "от 5 млн ₽",
-    yield: "12–15%",
-    period: "годовых",
-    features: [
-      "Прямые инвестиции в объекты",
-      "Договоры займа / долевое участие",
-      "Ежеквартальные выплаты",
-      "Регулярная отчётность",
-    ],
-    featured: false,
-  },
-  {
-    title: "HNWI",
-    volume: "от 50 млн ₽",
-    yield: "15–18%",
-    period: "годовых",
-    features: [
-      "Индивидуальные условия",
-      "Совместное владение объектами",
-      "Приоритетный доступ к новым проектам",
-      "Персональный менеджер",
-    ],
-    featured: true,
-  },
-  {
-    title: "Институциональные",
-    volume: "от 500 млн ₽",
-    yield: "Индивидуально",
-    period: "",
-    features: [
-      "Участие в капитале фонда / СПО",
-      "Индивидуальная структура сделки",
-      "Стратегическое партнёрство",
-      "Совместный девелопмент",
-    ],
-    featured: false,
-  },
-];
+import { useLang } from "@/lib/i18n";
 
 export function Investors() {
+  const { t } = useLang();
+  const { tiers } = t.investors;
+
   return (
     <section id="investors" className="py-24 md:py-32 bg-navy-950 relative overflow-hidden">
-      {/* Subtle background texture */}
       <div
         className="absolute inset-0 opacity-[0.025]"
         style={{
@@ -57,7 +18,6 @@ export function Investors() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
           <div>
             <motion.div
@@ -68,7 +28,7 @@ export function Investors() {
             >
               <div className="w-6 h-px bg-accent-400" />
               <span className="text-accent-400 text-xs font-semibold tracking-[0.22em] uppercase">
-                Форматы участия
+                {t.investors.tag}
               </span>
             </motion.div>
             <motion.h2
@@ -78,7 +38,7 @@ export function Investors() {
               transition={{ delay: 0.05 }}
               className="text-4xl md:text-5xl font-display text-white"
             >
-              Для инвесторов
+              {t.investors.title}
             </motion.h2>
           </div>
           <motion.p
@@ -88,11 +48,10 @@ export function Investors() {
             transition={{ delay: 0.15 }}
             className="text-white/40 text-sm font-sans leading-relaxed max-w-sm"
           >
-            Гибкие структуры сделок, адаптированные под профиль риска, объём капитала и стратегические цели инвестора.
+            {t.investors.sub}
           </motion.p>
         </div>
 
-        {/* Tiers */}
         <div className="grid md:grid-cols-3 gap-px bg-white/5">
           {tiers.map((tier, idx) => (
             <motion.div
@@ -101,7 +60,7 @@ export function Investors() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className={`relative flex flex-col p-8 lg:p-10 group transition-colors duration-300 ${
+              className={`relative flex flex-col p-8 lg:p-10 transition-colors duration-300 ${
                 tier.featured
                   ? "bg-accent-500 hover:bg-accent-600"
                   : "bg-white/[0.03] hover:bg-white/[0.07]"
@@ -109,16 +68,16 @@ export function Investors() {
             >
               {tier.featured && (
                 <div className="absolute top-0 right-8 -translate-y-1/2 bg-white text-accent-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1">
-                  Популярный выбор
+                  {t.investors.popular}
                 </div>
               )}
 
               <div className="mb-8">
-                <h3 className={`text-xl font-display font-semibold mb-5 ${tier.featured ? "text-white" : "text-white"}`}>
+                <h3 className="text-xl font-display font-semibold text-white mb-5">
                   {tier.title}
                 </h3>
                 <div className={`text-xs uppercase tracking-widest mb-2 ${tier.featured ? "text-white/60" : "text-white/30"}`}>
-                  Минимальный объём
+                  {t.investors.volLabel}
                 </div>
                 <div className={`text-2xl font-display font-semibold ${tier.featured ? "text-white" : "text-white/80"}`}>
                   {tier.volume}
@@ -127,7 +86,7 @@ export function Investors() {
 
               <div className={`py-6 border-y mb-8 ${tier.featured ? "border-white/20" : "border-white/8"}`}>
                 <div className={`text-[10px] uppercase tracking-widest mb-1.5 ${tier.featured ? "text-white/60" : "text-white/30"}`}>
-                  Целевая доходность
+                  {t.investors.yieldLabel}
                 </div>
                 <div className={`font-display font-semibold text-3xl ${tier.featured ? "text-white" : "text-white/80"}`}>
                   {tier.yield}
@@ -161,14 +120,13 @@ export function Investors() {
                     : "border border-white/15 text-white/70 hover:border-white/40 hover:text-white"
                 }`}
               >
-                Оставить заявку
+                {t.investors.cta}
                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
               </a>
             </motion.div>
           ))}
         </div>
 
-        {/* Disclaimer */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -176,7 +134,7 @@ export function Investors() {
           transition={{ delay: 0.5 }}
           className="mt-14 text-white/25 text-xs font-sans leading-relaxed max-w-4xl"
         >
-          * Указанная доходность является прогнозной и не гарантируется. Инвестиции в недвижимость сопряжены с рисками. Перед принятием решения об инвестировании рекомендуется ознакомиться с инвестиционным меморандумом и проконсультироваться с финансовым советником. Деятельность осуществляется в строгом соответствии с законодательством РФ.
+          {t.investors.disclaimer}
         </motion.p>
 
       </div>
