@@ -108,7 +108,7 @@ export function ContactForm() {
                     <Icon className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold mb-0.5">{label}</div>
+                    <div className="text-xs text-slate-400 tracking-wide font-semibold mb-0.5">{label}</div>
                     <a href={href} className="text-navy-900 font-medium text-sm hover:text-accent-500 transition-colors">{value}</a>
                   </div>
                 </div>
@@ -118,8 +118,8 @@ export function ContactForm() {
 
           {/* Form */}
           <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
             className="lg:col-span-3"
@@ -132,7 +132,7 @@ export function ContactForm() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-display text-navy-900 mb-3">{c.successTitle}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed max-w-sm">{c.successSub}</p>
+                <p className="text-slate-500 text-base leading-relaxed max-w-sm">{c.successSub}</p>
                 <button
                   onClick={() => setSubmitted(false)}
                   className="mt-8 text-xs text-slate-400 hover:text-navy-900 transition-colors underline underline-offset-4"
@@ -141,12 +141,12 @@ export function ContactForm() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white border border-slate-100 shadow-sm p-8 md:p-10 space-y-7">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white border border-slate-100 shadow-sm p-5 sm:p-8 md:p-10 space-y-7">
 
                 {/* Request type */}
                 <div className="space-y-3">
-                  <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">{c.requestLabel}</label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <label className="text-xs font-semibold tracking-wide text-slate-400">{c.requestLabel}</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {c.requestTypes.map((opt) => (
                       <label
                         key={opt.value}
@@ -166,13 +166,13 @@ export function ContactForm() {
                 {/* Name + Email */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">{c.nameLabel}</label>
+                    <label className="text-xs font-semibold tracking-wide text-slate-400">{c.nameLabel}</label>
                     <input type="text" placeholder={c.namePlaceholder} {...form.register("name")}
                       className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 placeholder:text-slate-300 focus:outline-none focus:border-accent-500 transition-colors" />
                     {form.formState.errors.name && <p className="text-red-500 text-xs">{form.formState.errors.name.message}</p>}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">{c.emailFieldLabel}</label>
+                    <label className="text-xs font-semibold tracking-wide text-slate-400">{c.emailFieldLabel}</label>
                     <input type="email" placeholder={c.emailPlaceholder} {...form.register("email")}
                       className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 placeholder:text-slate-300 focus:outline-none focus:border-accent-500 transition-colors" />
                     {form.formState.errors.email && <p className="text-red-500 text-xs">{form.formState.errors.email.message}</p>}
@@ -182,12 +182,12 @@ export function ContactForm() {
                 {/* Phone + Investor type */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">{c.phoneFieldLabel}</label>
+                    <label className="text-xs font-semibold tracking-wide text-slate-400">{c.phoneFieldLabel}</label>
                     <input type="tel" placeholder={c.phonePlaceholder} {...form.register("phone")}
                       className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 placeholder:text-slate-300 focus:outline-none focus:border-accent-500 transition-colors" />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">{c.investorLabel}</label>
+                    <label className="text-xs font-semibold tracking-wide text-slate-400">{c.investorLabel}</label>
                     <select {...form.register("investorType")} defaultValue=""
                       className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 focus:outline-none focus:border-accent-500 transition-colors appearance-none cursor-pointer">
                       <option value="" disabled hidden>{c.investorPlaceholder}</option>
@@ -199,7 +199,7 @@ export function ContactForm() {
 
                 {/* Volume */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">{c.volumeLabel}</label>
+                  <label className="text-xs font-semibold tracking-wide text-slate-400">{c.volumeLabel}</label>
                   <select {...form.register("investmentVolume")} defaultValue=""
                     className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 focus:outline-none focus:border-accent-500 transition-colors appearance-none cursor-pointer">
                     <option value="" disabled hidden>{c.volumePlaceholder}</option>
@@ -210,7 +210,7 @@ export function ContactForm() {
 
                 {/* Message */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">{c.messageLabel}</label>
+                  <label className="text-xs font-semibold tracking-wide text-slate-400">{c.messageLabel}</label>
                   <textarea {...form.register("message")} rows={3} placeholder={c.messagePlaceholder}
                     className="w-full bg-transparent border-b border-slate-200 py-2.5 text-sm text-navy-900 placeholder:text-slate-300 focus:outline-none focus:border-accent-500 transition-colors resize-none" />
                 </div>

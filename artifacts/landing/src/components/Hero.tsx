@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 
@@ -41,9 +41,12 @@ function CountUp({ target, suffix = "", duration = 2000 }: { target: number; suf
 export function Hero() {
   const { t } = useLang();
   const stats = t.hero.stats;
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-between pt-24 overflow-hidden bg-navy-950">
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col justify-between pt-24 overflow-hidden bg-navy-950">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-navy-950/70 z-10" />
@@ -55,10 +58,11 @@ export function Hero() {
             backgroundSize: "80px 80px",
           }}
         />
-        <img
+        <motion.img
           src={`${import.meta.env.BASE_URL}images/hero-bg.png`}
           alt="Commercial real estate"
-          className="w-full h-full object-cover"
+          style={{ y: bgY }}
+          className="w-full h-full object-cover scale-110"
         />
       </div>
 
@@ -66,47 +70,56 @@ export function Hero() {
       <div className="relative z-20 flex-1 flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
           <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="flex items-center gap-3 mb-8">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+                className="flex items-center gap-3 mb-8"
+              >
                 <div className="w-8 h-px bg-accent-400" />
                 <span className="text-accent-400 text-xs font-semibold tracking-[0.25em] uppercase">
                   {t.hero.tag}
                 </span>
-              </div>
+              </motion.div>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-white leading-[1.08] mb-6 text-balance">
-                {t.hero.headline1}{" "}
-                <span className="text-white/50 italic font-light">{t.hero.headline2}</span>
-              </h1>
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-white leading-[1.08] mb-6 text-balance hyphens-auto"
+              >
+                {t.hero.headline1}{" "}{t.hero.headline2}
+              </motion.h1>
 
-              <p className="text-base md:text-lg text-white/55 max-w-2xl leading-relaxed mb-10 font-sans font-light">
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+                className="text-base md:text-lg text-white/55 max-w-2xl leading-relaxed mb-10 font-sans font-light"
+              >
                 {t.hero.sub}
-              </p>
+              </motion.p>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <motion.a
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.55 }}
+                className="flex flex-col sm:flex-row gap-3"
+              >
+                <a
                   href="#contact"
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
                   className="group inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-white text-navy-900 text-sm font-semibold tracking-wide hover:bg-slate-100 transition-colors"
                 >
                   {t.hero.cta1}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                </motion.a>
-                <motion.a
+                </a>
+                <a
                   href="#contact"
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
                   className="inline-flex items-center justify-center px-8 py-4 bg-transparent border border-white/15 text-white/80 text-sm font-medium tracking-wide hover:border-white/35 hover:text-white transition-colors"
                 >
                   {t.hero.cta2}
-                </motion.a>
-              </div>
-            </motion.div>
+                </a>
+              </motion.div>
           </div>
         </div>
       </div>
@@ -119,9 +132,9 @@ export function Hero() {
         className="relative z-20 border-t border-white/8 bg-white/[0.03] backdrop-blur-sm"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/8">
+          <div className="grid grid-cols-2 md:grid-cols-4 md:divide-x divide-white/8">
             {stats.map((stat, i) => (
-              <div key={i} className="py-7 px-6 md:px-10">
+              <div key={i} className={`py-7 px-6 md:px-10 ${i >= 2 ? "border-t md:border-t-0 border-white/8" : ""} ${i % 2 === 1 ? "border-l md:border-l-0 border-white/8" : ""}`}>
                 <div className="text-white font-display text-3xl md:text-4xl font-semibold mb-1 tabular-nums">
                   <CountUp target={stat.value} suffix={stat.suffix} duration={1600} />
                 </div>

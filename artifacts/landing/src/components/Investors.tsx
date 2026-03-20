@@ -46,7 +46,7 @@ export function Investors() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            className="text-white/40 text-sm font-sans leading-relaxed max-w-sm"
+            className="text-white/40 text-base font-sans leading-relaxed max-w-sm"
           >
             {t.investors.sub}
           </motion.p>
@@ -56,18 +56,18 @@ export function Investors() {
           {tiers.map((tier, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className={`relative flex flex-col p-8 lg:p-10 transition-colors duration-300 ${
+              className={`relative flex flex-col p-6 sm:p-8 lg:p-10 transition-colors duration-300 ${
                 tier.featured
                   ? "bg-accent-500 hover:bg-accent-600"
                   : "bg-white/[0.03] hover:bg-white/[0.07]"
               }`}
             >
               {tier.featured && (
-                <div className="absolute top-0 right-8 -translate-y-1/2 bg-white text-accent-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1">
+                <div className="absolute top-0 right-8 -translate-y-1/2 bg-white text-accent-600 text-xs font-bold tracking-wide px-3 py-1">
                   {t.investors.popular}
                 </div>
               )}
@@ -76,7 +76,7 @@ export function Investors() {
                 <h3 className="text-xl font-display font-semibold text-white mb-5">
                   {tier.title}
                 </h3>
-                <div className={`text-xs uppercase tracking-widest mb-2 ${tier.featured ? "text-white/60" : "text-white/30"}`}>
+                <div className={`text-xs tracking-wide mb-2 ${tier.featured ? "text-white/60" : "text-white/30"}`}>
                   {t.investors.volLabel}
                 </div>
                 <div className={`text-2xl font-display font-semibold ${tier.featured ? "text-white" : "text-white/80"}`}>
@@ -85,7 +85,7 @@ export function Investors() {
               </div>
 
               <div className={`py-6 border-y mb-8 ${tier.featured ? "border-white/20" : "border-white/8"}`}>
-                <div className={`text-[10px] uppercase tracking-widest mb-1.5 ${tier.featured ? "text-white/60" : "text-white/30"}`}>
+                <div className={`text-xs tracking-wide mb-1.5 ${tier.featured ? "text-white/60" : "text-white/30"}`}>
                   {t.investors.yieldLabel}
                 </div>
                 <div className={`font-display font-semibold text-3xl ${tier.featured ? "text-white" : "text-white/80"}`}>
@@ -105,7 +105,7 @@ export function Investors() {
                       className={`w-4 h-4 shrink-0 mt-0.5 ${tier.featured ? "text-white" : "text-accent-400"}`}
                       strokeWidth={2.5}
                     />
-                    <span className={`text-sm font-sans leading-snug ${tier.featured ? "text-white/80" : "text-white/50"}`}>
+                    <span className={`text-base font-sans leading-snug ${tier.featured ? "text-white/80" : "text-white/50"}`}>
                       {f}
                     </span>
                   </li>

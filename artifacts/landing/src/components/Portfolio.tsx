@@ -86,7 +86,7 @@ export function Portfolio() {
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
-              className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all duration-200 border ${
+              className={`px-4 py-1.5 text-xs font-semibold tracking-wide transition-all duration-200 border ${
                 activeFilter === f
                   ? "bg-navy-900 text-white border-navy-900"
                   : "bg-transparent text-slate-500 border-slate-200 hover:border-navy-900 hover:text-navy-900"
@@ -100,16 +100,16 @@ export function Portfolio() {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
-            {filtered.map((item, idx) => (
-              <motion.div
-                key={item.title}
-                layout
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.3, delay: idx * 0.04 }}
-                className="group cursor-pointer flex flex-col bg-white border border-slate-100 hover:border-slate-200 hover:shadow-lg hover:shadow-slate-100 transition-all duration-400"
-              >
+          {filtered.map((item) => (
+            <motion.div
+              key={item.title}
+              layout
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="group cursor-pointer flex flex-col bg-white border border-slate-100 hover:border-slate-200 hover:shadow-lg hover:shadow-slate-100 transition-all duration-400"
+            >
                 <div className="relative h-52 overflow-hidden bg-slate-100">
                   <img
                     src={`${import.meta.env.BASE_URL}images/${item.image}`}
@@ -118,7 +118,7 @@ export function Portfolio() {
                   />
                   <div className="absolute inset-0 bg-navy-900/10 group-hover:bg-navy-900/5 transition-colors" />
                   <div className="absolute top-3 left-3">
-                    <span className={`text-[10px] font-bold px-2.5 py-1 uppercase tracking-widest ${typeColors[item.type] ?? "bg-navy-900 text-white"}`}>
+                    <span className={`text-xs font-bold px-2.5 py-1 tracking-wide ${typeColors[item.type] ?? "bg-navy-900 text-white"}`}>
                       {item.type}
                     </span>
                   </div>
@@ -128,23 +128,23 @@ export function Portfolio() {
                   <h4 className="text-lg font-display font-semibold text-navy-900 mb-3 leading-snug group-hover:text-accent-600 transition-colors">
                     {item.title}
                   </h4>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-4 font-medium uppercase tracking-wide">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-4 font-medium tracking-wide">
                     <MapPin className="w-3 h-3 flex-shrink-0" />
                     {item.location}
                   </div>
                   <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
                     <div>
-                      <div className="text-xs text-slate-400 uppercase tracking-wider mb-0.5">{item.meta}</div>
-                      <div className="text-sm font-semibold text-navy-900">{item.specs}</div>
+                      <div className="text-xs text-slate-400 tracking-wide mb-0.5">{item.meta}</div>
+                      <div className="text-base font-semibold text-navy-900">{item.specs}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-slate-400 uppercase tracking-wider mb-0.5">{t.portfolio.statusLabel}</div>
-                      <div className="text-sm font-semibold text-accent-600">{item.highlights}</div>
+                      <div className="text-xs text-slate-400 tracking-wide mb-0.5">{t.portfolio.statusLabel}</div>
+                      <div className="text-base font-semibold text-accent-600">{item.highlights}</div>
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
+            </motion.div>
+          ))}
           </AnimatePresence>
         </div>
 

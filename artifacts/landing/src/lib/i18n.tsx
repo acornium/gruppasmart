@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 
 export type Lang = "ru" | "en";
 
@@ -15,7 +15,7 @@ export const translations = {
       tag: "Девелопмент и управление активами",
       headline1: "Диверсифицированные инвестиции в",
       headline2: "реальные активы",
-      sub: "С фокусом на сохранение и долгосрочный рост капитала. Компания формирует и управляет портфелем складской, торговой и жилой недвижимости — активов с устойчивым спросом и предсказуемой доходностью.",
+      sub: "Многопрофильная инвестиционная группа, финансирующая проекты с высоким потенциалом развития в различных отраслях экономики России",
       cta1: "Инвестировать в портфель",
       cta2: "Получить презентацию",
       stats: [
@@ -137,10 +137,10 @@ export const translations = {
       cta: "Contact Us",
     },
     hero: {
-      tag: "Development & Asset Management",
-      headline1: "Diversified investments in",
-      headline2: "real assets",
-      sub: "With a focus on capital preservation and long-term growth. We build and manage a diversified portfolio of warehouse, retail and residential real estate — assets with stable demand and predictable returns.",
+      tag: "Multifaceted Investment Group",
+      headline1: "Financing high-potential projects",
+      headline2: "across the Russian economy",
+      sub: "A diversified investment group financing projects with strong development potential across multiple sectors of the Russian economy.",
       cta1: "Invest in the Portfolio",
       cta2: "Request a Presentation",
       stats: [
@@ -267,26 +267,18 @@ const LangContext = createContext<LangContextType | null>(null);
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("ru");
   const t = translations[lang] as unknown as Translations;
-  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const toggle = useCallback(() => {
-    // Switch language immediately — no fade-out, just fade-in from partial opacity
-    setLang((l) => (l === "ru" ? "en" : "ru"));
-
-    // Trigger the CSS animation by briefly removing and re-adding the class
-    const el = wrapperRef.current;
-    if (el) {
-      el.classList.remove("lang-switch");
-      void el.offsetWidth; // force reflow so browser sees the class removal
-      el.classList.add("lang-switch");
-    }
+    setLang((l) => {
+      const next = l === "ru" ? "en" : "ru";
+      document.documentElement.lang = next;
+      return next;
+    });
   }, []);
 
   return (
     <LangContext.Provider value={{ lang, t, toggle }}>
-      <div ref={wrapperRef}>
-        {children}
-      </div>
+      {children}
     </LangContext.Provider>
   );
 }

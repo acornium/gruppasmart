@@ -46,17 +46,20 @@ export function About() {
           </motion.p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-px bg-slate-200">
+        <div className="grid md:grid-cols-2">
           {features.map((feature, idx) => {
             const Icon = icons[idx];
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.08 }}
-                className="group bg-white p-10 lg:p-12 hover:bg-navy-900 transition-all duration-500 cursor-default"
+                className={`group bg-white p-10 lg:p-12 hover:bg-navy-900 transition-all duration-500 cursor-default border-slate-200
+                  ${idx % 2 === 0 ? "border-r" : ""}
+                  ${idx < 2 ? "border-b" : ""}
+                `}
               >
                 <div className="flex items-start justify-between mb-8">
                   <div className="w-12 h-12 bg-slate-100 group-hover:bg-white/10 flex items-center justify-center transition-colors">
@@ -69,7 +72,7 @@ export function About() {
                 <h4 className="text-xl font-display font-semibold text-navy-900 group-hover:text-white mb-4 transition-colors">
                   {feature.title}
                 </h4>
-                <p className="text-slate-500 group-hover:text-white/60 font-sans leading-relaxed text-sm transition-colors">
+                <p className="text-slate-500 group-hover:text-white/60 font-sans leading-relaxed text-base transition-colors">
                   {feature.description}
                 </p>
               </motion.div>

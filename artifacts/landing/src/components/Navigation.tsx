@@ -32,25 +32,24 @@ export function Navigation() {
       <div id="scroll-progress" style={{ width: `${scrollProgress}%` }} />
 
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-          isScrolled ? "glass-nav py-4 shadow-sm" : "bg-transparent py-6"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-in-out ${
+          isScrolled ? "glass-nav py-3 shadow-sm" : "bg-transparent py-6"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
 
             {/* Logo */}
-            <a href="#" className="flex flex-col group">
-              <span className={`font-display text-xl font-bold tracking-[0.12em] uppercase transition-colors ${
-                isScrolled ? "text-navy-900" : "text-white"
-              }`}>
-                SMART
-              </span>
-              <span className={`text-[0.6rem] tracking-[0.25em] font-medium uppercase transition-colors ${
-                isScrolled ? "text-slate-500" : "text-white/50"
-              }`}>
-                Development
-              </span>
+            <a href="#" className="flex items-center">
+              <img
+                src={
+                  isScrolled
+                    ? `${import.meta.env.BASE_URL}sg.svg`
+                    : `${import.meta.env.BASE_URL}sgwhite.svg`
+                }
+                alt="SMART Development"
+                className="h-8 w-auto"
+              />
             </a>
 
             {/* Desktop Nav */}
@@ -75,9 +74,29 @@ export function Navigation() {
                   isScrolled ? "text-slate-400 hover:text-navy-900" : "text-white/40 hover:text-white"
                 }`}
               >
-                <span className={lang === "ru" ? "text-accent-500" : ""}>RU</span>
-                <span className={isScrolled ? "text-slate-200" : "text-white/20"}>/</span>
-                <span className={lang === "en" ? "text-accent-500" : ""}>EN</span>
+                <motion.span
+                  animate={{
+                    opacity: lang === "ru" ? 1 : 0.4,
+                    scale: lang === "ru" ? 1.05 : 1,
+                  }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                >
+                  RU
+                </motion.span>
+                <motion.span
+                  className={isScrolled ? "text-slate-200" : "text-white/20"}
+                >
+                  /
+                </motion.span>
+                <motion.span
+                  animate={{
+                    opacity: lang === "en" ? 1 : 0.4,
+                    scale: lang === "en" ? 1.05 : 1,
+                  }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                >
+                  EN
+                </motion.span>
               </button>
 
               <a
@@ -116,40 +135,40 @@ export function Navigation() {
             </div>
           </div>
         </div>
-
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="overflow-hidden md:hidden bg-white border-t border-slate-100 shadow-xl"
-            >
-              <div className="flex flex-col px-6 py-6 gap-5">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-navy-900 text-base font-medium border-b border-slate-100 pb-4 last:border-0 hover:text-accent-500 transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-                <a
-                  href="#contact"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="mt-2 block text-center py-3 bg-navy-900 text-white text-sm font-semibold tracking-wider hover:bg-accent-500 transition-colors"
-                >
-                  {t.nav.cta}
-                </a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </nav>
+
+      {/* Mobile menu — outside nav to avoid overflow clipping */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className={`fixed left-0 right-0 z-40 md:hidden bg-white border-t border-slate-100 shadow-xl ${isScrolled ? "top-[60px]" : "top-[72px]"}`}
+          >
+            <div className="flex flex-col px-6 py-6 gap-5">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-navy-900 text-base font-medium border-b border-slate-100 pb-4 last:border-0 hover:text-accent-500 transition-colors"
+                >
+                  {link.name}
+                </a>
+              ))}
+              <a
+                href="#contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="mt-2 block text-center py-3 bg-navy-900 text-white text-sm font-semibold tracking-wider hover:bg-accent-500 transition-colors"
+              >
+                {t.nav.cta}
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
